@@ -18,11 +18,7 @@ public class TranslationClientYandexImpl implements TranslationClient {
 
     @Override
     public String translate(String textForTranslation, String sourceLanguage, String targetLanguage) {
-        TranslationYandexRequest translationYandexRequest = new TranslationYandexRequest();
-        translationYandexRequest.setFolderId(connectionProperties.getFolderId());
-        translationYandexRequest.setSourceLanguageCode(sourceLanguage);
-        translationYandexRequest.setTargetLanguageCode(targetLanguage);
-        translationYandexRequest.getTexts().add(textForTranslation);
+        TranslationYandexRequest translationYandexRequest = createRequest(textForTranslation, sourceLanguage, targetLanguage);
 
         TranslationYandexResponse translationYandexResponse = yandexRestTemplate.postForObject(connectionProperties.getApiUrl(), translationYandexRequest, TranslationYandexResponse.class);
 
@@ -30,5 +26,14 @@ public class TranslationClientYandexImpl implements TranslationClient {
                 .stream()
                 .map(TranslationResult::getText)
                 .collect(Collectors.joining(" "));
+    }
+
+    private TranslationYandexRequest createRequest(String textForTranslation, String sourceLanguage, String targetLanguage) {
+        TranslationYandexRequest translationYandexRequest = new TranslationYandexRequest();
+        translationYandexRequest.setFolderId(connectionProperties.getFolderId());
+        translationYandexRequest.setSourceLanguageCode(sourceLanguage);
+        translationYandexRequest.setTargetLanguageCode(targetLanguage);
+        translationYandexRequest.getTexts().add(textForTranslation);
+        return translationYandexRequest;
     }
 }

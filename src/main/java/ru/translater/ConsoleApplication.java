@@ -14,6 +14,10 @@ public class ConsoleApplication implements CommandLineRunner {
     @Autowired
     private TranslationClient translationClient;
 
+    public ConsoleApplication(TranslationClient translationClient) {
+        this.translationClient = translationClient;
+    }
+
     public static void main(String[] args) {
         log.info("STARTING THE APPLICATION");
         SpringApplication.run(ConsoleApplication.class, args);
@@ -23,7 +27,8 @@ public class ConsoleApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         log.info("EXECUTING : command line runner");
-
+        String translated = translationClient.translate("Hi!", "en", "ru");
+        log.info("Translated text: " + translated);
         for (int i = 0; i < args.length; ++i) {
             log.info("args[{}]: {}", i, args[i]);
         }

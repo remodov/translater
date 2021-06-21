@@ -28,12 +28,9 @@ public class YandexTranslationConfiguration {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setMessageConverters(getMessageConverters());
         restTemplate.getInterceptors().add(
-                new ClientHttpRequestInterceptor() {
-                    @Override
-                    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-                        request.getHeaders().add(HttpHeaders.AUTHORIZATION, AUTHORIZATION_API_KEY + " " + connectionProperties.getApiKey());
-                        return execution.execute(request, body);
-                    }
+                (request, body, execution) -> {
+                    request.getHeaders().add(HttpHeaders.AUTHORIZATION, AUTHORIZATION_API_KEY + " " + connectionProperties.getApiKey());
+                    return execution.execute(request, body);
                 }
         );
 
