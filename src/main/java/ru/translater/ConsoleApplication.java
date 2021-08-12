@@ -1,22 +1,24 @@
 package ru.translater;
 
+import com.github.rvesse.airline.SingleCommand;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import ru.translater.translation.TranslationClient;
+import ru.translater.common.ExecutionTask;
+import ru.translater.common.Task;
+import ru.translater.common.TaskFactory;
+import ru.translater.common.TaskType;
 
 
 @Slf4j
 @SpringBootApplication
+@RequiredArgsConstructor
 public class ConsoleApplication implements CommandLineRunner {
-    @Autowired
-    private TranslationClient translationClient;
-
-    public ConsoleApplication(TranslationClient translationClient) {
-        this.translationClient = translationClient;
-    }
+    private final TaskFactory taskFactory;
 
     public static void main(String[] args) {
         log.info("STARTING THE APPLICATION");
@@ -24,13 +26,13 @@ public class ConsoleApplication implements CommandLineRunner {
         log.info("APPLICATION FINISHED");
     }
 
+    @SneakyThrows
     @Override
     public void run(String... args) {
-        log.info("EXECUTING : command line runner");
-        String translated = translationClient.translate("Hi!", "en", "ru");
-        log.info("Translated text: " + translated);
-        for (int i = 0; i < args.length; ++i) {
-            log.info("args[{}]: {}", i, args[i]);
-        }
+        SingleCommand<Task> parser = SingleCommand.singleCommand(Task.class);
+        Task taskForRun = parser.parse(args);
+
+        ExecutionTask taskRunner = taskFactory.getTaskRunner(TaskType.valueOf(taskForRun.getName()));
+        taskRunner.start();
     }
 }

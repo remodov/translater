@@ -1,0 +1,105 @@
+{
+  "rules": [
+    {
+      "fieldName": "description",
+      "type": "element",
+      "isTranslated" : "true",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "RecipeAbstract"
+        }
+      ]
+    },
+    {
+      "fieldName": "cookSteps",
+      "type": "list",
+      "isTranslated" : "true",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "MethodList__Step"
+        }
+      ]
+    },
+    {
+      "fieldName": "categories",
+      "type": "list",
+      "isTranslated" : "true",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "RelatedCollections__CollectionItem"
+        }
+      ]
+    },
+    {
+      "fieldName": "title",
+      "type": "element",
+      "isTranslated" : "true",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "element",
+          "searchValue": "title"
+        }
+      ]
+    },
+    {
+      "fieldName": "header",
+      "type": "element",
+      "isTranslated" : "true",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "Header__Title"
+        }
+      ]
+    },
+    {
+      "fieldName": "cookedTime",
+      "isTranslated" : "true",
+      "type": "element",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "RecipeAttributes__Time"
+        }
+      ]
+    },
+    {
+      "fieldName": "difficult",
+      "isTranslated" : "true",
+      "type": "element",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "RecipeAttributes__Difficulty"
+        }
+      ]
+    },
+    {
+      "fieldName": "ingredients",
+      "isTranslated" : "true",
+      "type": "list",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "IngredientsList__ListContainer"
+        },
+        {
+          "order": 2,
+          "searchType" : "class",
+          "searchValue": "IngredientsList__Ingredient"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "sourceUrl": "https://www.greatbritishchefs.com/recipes/vegan-nasi-goreng-recipe",
+  "uniqueId": "greatbritishchefs-com-recipes-vegan-nasi-goreng-recipe",
+  "generatedDate": "2021-07-30T12:11:23.096",
+  "pictureUrl": "greatbritishchefs-com-recipes-vegan-nasi-goreng-recipe.jpg",
+  "metas": [
+    {
+      "name": "author",
+      "property": "",
+      "content": "greatbritishchefs",
+      "nameExists": true
+    },
+    {
+      "name": "viewport",
+      "property": "",
+      "content": "width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0",
+      "nameExists": true
+    },
+    {
+      "name": "HandheldFriendly",
+      "property": "",
+      "content": "true",
+      "nameExists": true
+    },
+    {
+      "name": "description",
+      "property": "",
+      "content": "This nasi goreng recipe by David and Charlotte Bailey makes a quick and colourful meal and is a fantastic way of using up leftovers. A vegan recipe packed with fruit and vegetables, this easy fried rice dish makes the perfect midweek meal.",
+      "nameExists": true
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "This nasi goreng recipe by David and Charlotte Bailey makes a quick and colourful meal and is a fantastic way of using up leftovers. A vegan recipe packed with fruit and vegetables, this easy fried rice dish makes the perfect midweek meal.",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "Vegan Nasi Goreng Recipe - Great British Chefs",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "globalchefs:recipe",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "https://gbc-cdn-public-media.azureedge.net/img60117.1426x713.jpg",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "https://gbc-cdn-public-media.azureedge.net/img60117.735x1102.jpg",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "Great British Chefs",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "200937473307040",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "",
+      "content": "https://www.facebook.com/greatbritishchefs",
+      "nameExists": false
+    },
+    {
+      "name": "twitter:site",
+      "property": "",
+      "content": "@gbcchefs",
+      "nameExists": true
+    },
+    {
+      "name": "twitter:creator",
+      "property": "",
+      "content": "@gbcchefs",
+      "nameExists": true
+    },
+    {
+      "name": "twitter:title",
+      "property": "",
+      "content": "Vegan Nasi Goreng Recipe - Great British Chefs",
+      "nameExists": true
+    },
+    {
+      "name": "twitter:description",
+      "property": "",
+      "content": "This nasi goreng recipe by David and Charlotte Bailey makes a quick and colourful meal and is a fantastic way of using up leftovers. A vegan recipe packed with fruit and vegetables, this easy fried rice dish makes the perfect midweek meal.",
+      "nameExists": true
+    },
+    {
+      "name": "twitter:image",
+      "property": "",
+      "content": "https://gbc-cdn-public-media.azureedge.net/img60117.1426x713.jpg",
+      "nameExists": true
+    },
+    {
+      "name": "twitter:card",
+      "property": "",
+      "content": "summary_large_image",
+      "nameExists": true
+    },
+    {
+      "name": "",
+      "property": "datePublished",
+      "content": "2016-03-18",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "dateModified",
+      "content": "2020-08-13",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "description",
+      "content": "This nasi goreng recipe by David and Charlotte Bailey makes a quick and colourful meal and is a fantastic way of using up leftovers. A vegan recipe packed with fruit and vegetables, this easy fried rice dish makes the perfect midweek meal.",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "datePublished",
+      "content": "2016-04-07",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "indonesian",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "lemongrass",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "ginger",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "chilli pepper",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "vegetarian",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "dairy free",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "pineapple",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "banana",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "vegan",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "rice",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "jasmine rice",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "rice",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "about",
+      "content": "fried rice",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "name",
+      "content": "Great British Chefs",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "url",
+      "content": "https://gbc-cdn-public-media.azureedge.net/img7422.96x60.png",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "width",
+      "content": "96",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "height",
+      "content": "60",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "name",
+      "content": "Great British Chefs",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "url",
+      "content": "https://gbc-cdn-public-media.azureedge.net/img60117.768x512.jpg",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "width",
+      "content": "768",
+      "nameExists": false
+    },
+    {
+      "name": "",
+      "property": "height",
+      "content": "512",
+      "nameExists": false
+    }
+  ],
+  "payload": {
+    "description": "David and Charlotte Bailey's colourful nasi goreng recipe is a fantastic way of using up leftover rice. Packed with juicy fruit and vegetables, this vegan fried rice recipe makes a healthy and filling meal. Don't be put off by the long list of ingredients – preparing your own curry paste from scratch is simple and tastes far superior to shop bought varieties.",
+    "cookSteps": [
+      "1 Begin by preparing the nasi goreng curry paste. Put all the ingredients in a food processor and blitz to a smooth paste",
+      "2 Place a wok over a medium heat and warm 2 tablespoons of the coconut oil, then stir in the curry paste and fry until aromatic",
+      "3 Add the green beans and carrot and sauté for a couple of minutes, then add the rice and cook for another couple of minutes, stirring constantly. Once the rice starts to heat up, add the shallots then the kecap manis, tamari, red chillies, Thai basil and salt and continue to cook until the rice is hot through",
+      "4 Meanwhile, put a frying pan over a medium heat and warm the remaining coconut oil. Add the bananas and pineapple and sauté on both sides until they've taken on a bit of colour. Set aside until ready to serve",
+      "5 Transfer the fried rice to bowls and top each one with a slice of the sautéed banana and a couple of sautéed pineapple slices. Garnish with the spring onions, tomato, cucumber, coriander and crispy fried shallots and serve"
+    ],
+    "categories": [
+      "Rice Recipes",
+      "Vegan Recipes",
+      "Vegetarian Recipes",
+      "Lemongrass Recipes",
+      "Dairy-free Recipes",
+      "Rice Recipes",
+      "Vegan Recipes",
+      "Vegetarian Recipes",
+      "Lemongrass Recipes",
+      "Dairy-free Recipes"
+    ],
+    "title": "Vegan Nasi Goreng Recipe - Great British Chefs",
+    "header": "Vegan nasi goreng",
+    "cookedTime": "30 minutes",
+    "difficult": "easy",
+    "ingredients": [
+      "coconut oil",
+      "green beans",
+      "carrot",
+      "jasmine rice",
+      "shallots",
+      "kecap manis",
+      "tamari",
+      "red chillies",
+      "Thai basil",
+      "bananas",
+      "pineapple",
+      "salt",
+      "nutmeg",
+      "black peppercorns",
+      "shallots",
+      "fresh ginger",
+      "20g of galangal, peeled and finely chopped",
+      "turmeric",
+      "lemongrass",
+      "garlic cloves",
+      "red chilli",
+      "1 1/2 tsp palm sugar",
+      "salt",
+      "coconut oil",
+      "lime",
+      "spring onions",
+      "tomatoes",
+      "cucumber",
+      "fresh coriander",
+      "crispy shallots"
+    ]
+  }
+}
