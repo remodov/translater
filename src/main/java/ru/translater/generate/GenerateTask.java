@@ -164,17 +164,23 @@ public class GenerateTask implements ExecutionTask {
           <Autocompletion term="Рецепты Шашлыка" type="1" match="1"/>
         </Autocompletions>
         * */
+        Set<String> pageTitles =
+                commonPageModels.stream().map(page-> page.getPayload().get("header").textValue())
+                        .collect(Collectors.toSet());
 
-        Set<String> categories =
+        Set<String> categories = new HashSet<>();
                 commonPageModels.stream()
                         .map(this::getCategories)
                         .flatMap((Function<Set<String>, Stream<String>>) Collection::stream)
                         .collect(Collectors.toSet());
 
+        categories.addAll(pageTitles);
+        List<String> totalLinks = categories.stream().limit(2000).collect(Collectors.toList());
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         stringBuilder.append("<Autocompletions start=\"0\" num= \"" + categories.size() + "\" total=\"" + categories.size() + "\">");
-        categories.stream().forEach(cat -> stringBuilder.append("<Autocompletion term=\""+ cat + "\" type=\"1\" match=\"1\"/>"));
+        totalLinks.stream().forEach(cat -> stringBuilder.append("<Autocompletion term=\""+ cat.replaceAll("\"", "") + "\" type=\"1\" match=\"1\"/>"));
         stringBuilder.append("</Autocompletions>");
 
         FileUtils.writeStringToFile(new File(pathForStore.toString() + File.separator + "googleAutoComplete.xml"), stringBuilder.toString());

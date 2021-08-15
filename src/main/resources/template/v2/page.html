@@ -21,7 +21,6 @@
     <title th:text="${title}"></title>
     <meta name="description" th:content="${description}" content="Сайт об HTML и создании сайтов">
 
-    <title>Сайт рецептов</title>
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon-57x57.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72x72.png"/>
@@ -83,12 +82,12 @@
           <div class="collapse navbar-collapse" id="main-navbar">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="about.html">
                   О нас
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="contact.html">
                   Контакты
                 </a>
               </li>
@@ -104,12 +103,12 @@
         <!-- Mobile Menu Start -->
         <ul class="mobile-menu">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="about.html">
               О нас
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="contact.html">
               Контакты
             </a>
           </li>
@@ -159,7 +158,17 @@
               <!-- Post Content -->
               <div class="post-content">                   
                 <div class="meta">
-                  <span class="meta-part"><a href="#"><i class="lni-alarm-clock"></i> <span property="datePublished" th:text="${generatedDate}"></span> 21, 2018</a></span>
+                  <ul>
+                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b>Дата публикации:</b> <span
+                            property="datePublished" th:text="${generatedDate}"></span></span>
+                    </li>
+                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b>Время приготовления:</b> <span
+                            property="totalTime" th:text="${cookedTime}"></span></span>
+                    </li>
+                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b>Сложность:</b>  <span
+                            th:text="${difficult}"></span></span>
+                    </li>
+                  </ul>
                 </div>
                 <p property="description" th:text="${description}">Описание</p>
 
