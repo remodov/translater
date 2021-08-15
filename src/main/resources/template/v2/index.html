@@ -115,7 +115,7 @@
           <div class="row d-flex justify-content-center">
             <div class="col-md-9 col-lg-9 col-xs-12 text-center">
               <div class="contents">
-                <h1 class="head-title">Исследуйте <span th:text="${countPages}">1200</span> зарубежных рецептов</h1>
+                <h1 class="head-title">Исследуйте зарубежные рецепты</h1>
                 <p>Мы пополняем для Вас базу данных рецептов от иностранных блогеров и знаменитых поваров</p>
                 <div class="search-two-form">
                   <form class="search-two" action="">
@@ -137,6 +137,7 @@
 
     </header>
     <!-- Header Area wrapper End -->
+
 
     <!-- Categories Homepage Section Start -->
     <section id="categories" class="section-padding bg-drack">
@@ -164,6 +165,56 @@
       </div>
     </section>
     <!-- Categories Homepage Section End -->
+
+    <!-- Counter Area Start-->
+    <section class="counter-section section-padding">
+      <div class="container">
+        <div class="row">
+          <!-- Counter Item -->
+          <div class="col-md-6 col-sm-6 work-counter-widget text-center">
+            <div class="counter">
+              <div class="icon"><i class="lni-layers"></i></div>
+              <h2 class="counterUp"><span th:text="${countPages}">1200</span></h2>
+              <p>Рецептов</p>
+            </div>
+          </div>
+          <!-- Counter Item -->
+          <div class="col-md-6 col-sm-6 work-counter-widget text-center">
+            <div class="counter">
+              <div class="icon"><i class="lni-map"></i></div>
+              <h2 class="counterUp"><span th:text="${countCategories}">1200</span></h2>
+              <p>Категорий</p>
+            </div>
+          </div>
+          <!-- Counter Item -->
+          <!-- Counter Item -->
+        </div>
+      </div>
+    </section>
+    <!-- Counter Area End-->
+
+    <!-- Featured Section Start -->
+    <section class="featured section-padding">
+      <div class="container">
+        <h1 class="section-title">Новые рецепты</h1>
+        <div class="row">
+          <div th:each="page : ${latPages}" class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
+            <div class="featured-box">
+              <figure>
+                <div class="icon">
+                  <i class="lni-heart"></i>
+                </div>
+                <a th:href="${page.url}" href="#"><img class="img-fluid" th:src="${page.imgUrl}" src="assets/img/featured/img1.jpg" alt=""></a>
+              </figure>
+              <div class="feature-content">
+                <h4><a th:href="${page.url}" th:text="${page.name}">Apple Macbook Pro 13 Inch</a></h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Featured Section End -->
 
     <!-- Footer Section Start -->
     <footer>
@@ -210,9 +261,7 @@
     <script src="assets/js/contact-form-script.min.js"></script>
     <script src="assets/js/summernote.js"></script>
 
-    <script type="text/javascript" src="js/common.js"></script>
-
-    <!-- Yandex.Metrika counter -->
+<!--    &lt;!&ndash; Yandex.Metrika counter &ndash;&gt;-->
     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
         m[i] = m[i] || function () {

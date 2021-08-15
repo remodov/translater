@@ -62,6 +62,8 @@ public class GenerateTask implements ExecutionTask {
             createDirectories(formatStorePath);
         }
 
+        generateAutoCompleteXml(commonPageModels);
+
         generateCategory(commonPageModels);
 
         generatePages(commonPageModels);
@@ -154,6 +156,31 @@ public class GenerateTask implements ExecutionTask {
     }
 
     @SneakyThrows
+    private void generateAutoCompleteXml(List<Page> commonPageModels) {
+        /*
+        * <?xml version="1.0" encoding="UTF-8"?>
+        <Autocompletions start="0" num="2" total="2">
+          <Autocompletion term="asas" type="1" match="1"/>
+          <Autocompletion term="Рецепты Шашлыка" type="1" match="1"/>
+        </Autocompletions>
+        * */
+
+        Set<String> categories =
+                commonPageModels.stream()
+                        .map(this::getCategories)
+                        .flatMap((Function<Set<String>, Stream<String>>) Collection::stream)
+                        .collect(Collectors.toSet());
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        stringBuilder.append("<Autocompletions start=\"0\" num= \"" + categories.size() + "\" total=\"" + categories.size() + "\">");
+        categories.stream().forEach(cat -> stringBuilder.append("<Autocompletion term=\""+ cat + "\" type=\"1\" match=\"1\"/>"));
+        stringBuilder.append("</Autocompletions>");
+
+        FileUtils.writeStringToFile(new File(pathForStore.toString() + File.separator + "googleAutoComplete.xml"), stringBuilder.toString());
+    }
+
+    @SneakyThrows
     private void generateSitemapXml(List<Page> commonPageModels) {
         WebSitemapGenerator wsg = WebSitemapGenerator.builder("https://www.qas.su", new File(generateProperties.getStorePath()))
                 .build();
@@ -211,9 +238,18 @@ public class GenerateTask implements ExecutionTask {
             }
             i++;
             block.categoryInfos.add(cat);
+            if (blocks.size() >= 8) {
+                break;
+            }
         }
+
+        List<ShortPageInfo> latPages = pages.stream().map(page -> new ShortPageInfo(page.getUniqueId() + ".html", page.getPictureUrl(), page.getPayload().get("title").textValue(), page.getPayload().get("description").textValue()))
+                .limit(9).collect(Collectors.toList());
+
         context.setVariable("blocks", blocks);
+        context.setVariable("latPages", latPages);
         context.setVariable("countPages", pages.size());
+        context.setVariable("countCategories", pagesByCategory.size());
         context.setVariable("uniqueId", "index");
         return context;
     }

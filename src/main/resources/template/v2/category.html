@@ -58,6 +58,7 @@
     <!-- Responsive Style -->
     <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   </head>
   <body>
 
@@ -140,6 +141,32 @@
     <div class="main-container section-padding">
       <div class="container">
         <div class="row">
+          <div class="col-lg-4 col-md-12 col-xs-12 page-sidebar">
+            <aside>
+              <!-- Searcg Widget -->
+              <div class="widget_search">
+                <h4 class="fst-italic">Поиск по сайту</h4>
+                <form id="search-form">
+                  <div class="gcse-search"></div>
+                </form>
+              </div>
+              <!-- Categories Widget -->
+              <div class="widget categories">
+                <h4 class="widget-title">Категории рецептов</h4>
+                <div class="dashboard-wrapper">
+                  <div class="form-group mb-3">
+                    <select class="js-example-basic-single" name="state">
+                      <option th:each="category : ${categories}" th:value="${category.categoryUrl}" th:text="${category.name}">Alabama</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card card--padding fill-bg">
+                  <button id="search" class="btn btn-common btn-full" type="button">Найти</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+
           <div class="col-lg-8 col-md-12 col-xs-12 page-content">
             <!-- Product filter Start -->
             <div class="product-filter">
@@ -176,32 +203,6 @@
                 </div>
               </div>
             </div>
-            <!-- Adds wrapper End -->
-
-            <!-- Start Pagination -->
-            <!-- End Pagination -->
-
-          </div>
-          <div class="col-lg-4 col-md-12 col-xs-12 page-sidebar">
-            <aside>
-              <!-- Searcg Widget -->
-              <div class="widget_search">
-                <h4 class="fst-italic">Поиск по сайту</h4>
-                <form id="search-form">
-                  <div class="gcse-search"></div>
-                </form>
-              </div>
-              <!-- Categories Widget -->
-              <div class="widget categories">
-                <h4 class="widget-title">Категории рецепта</h4>
-                <ul class="categories-list">
-                  <li th:each="category : ${categories}" >
-                    <a property="recipeCategory" th:href="${category.categoryUrl}"  th:text="${category.name}">Категории рецептов</a>
-                  </li>
-                </ul>
-              </div>
-
-            </aside>
           </div>
         </div>
       </div>
@@ -252,7 +253,7 @@
     <script src="assets/js/form-validator.min.js"></script>
     <script src="assets/js/contact-form-script.min.js"></script>
     <script src="assets/js/summernote.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
@@ -270,6 +271,16 @@
     <!-- /Yandex.Metrika counter -->
     <script async src="https://cse.google.com/cse.js?cx=4c3720658b865ae2c"></script>
 
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+        $('#search').click(function() {
+          location.href = $('.js-example-basic-single').select2('data')[0].id;
+        });
+
+      });
+    </script>
+
     <!-- Rating Mail.ru counter -->
     <script type="text/javascript">
       var _tmr = window._tmr || (window._tmr = []);
@@ -285,6 +296,7 @@
       <img src="https://top-fwz1.mail.ru/counter?id=3223927;js=na" style="border:0;position:absolute;left:-9999px;" alt="Top.Mail.Ru" />
     </div></noscript>
     <!-- //Rating Mail.ru counter -->
-
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6822823724045312"
+            crossorigin="anonymous"></script>
   </body>
 </html>
