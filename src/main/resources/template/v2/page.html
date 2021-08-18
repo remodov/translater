@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <script data-ad-client="ca-pub-6822823724045312" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,6 +19,14 @@
 
     <title th:text="${title}"></title>
     <meta name="description" th:content="${description}" content="Сайт об HTML и создании сайтов">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@KingdomMidichi">
+    <meta name="twitter:creator" content="@qas">
+    <meta name="twitter:title"  th:content="${title}" content="Название страницы">
+    <meta name="twitter:description" th:content="${description}">
+    <meta name="twitter:image" th:content="'https://www.qas.su/' + ${pictureUrl}">
+    <meta name="twitter:url" content="https://www.qas.su/">
 
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon-57x57.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114.png"/>
@@ -60,7 +67,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
     <!-- Responsive Style -->
     <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
-
+    <script data-ad-client="ca-pub-6822823724045312" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   </head>
   <body vocab="https://schema.org/" typeof="Recipe">
 
@@ -333,9 +340,7 @@
       <img src="https://top-fwz1.mail.ru/counter?id=3223927;js=na" style="border:0;position:absolute;left:-9999px;" alt="Top.Mail.Ru" />
     </div></noscript>
     <!-- //Rating Mail.ru counter -->
+    <!-- вертикальные -->
 
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6822823724045312"
-            crossorigin="anonymous"></script>
   </body>
 </html>
