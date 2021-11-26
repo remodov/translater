@@ -1,0 +1,37 @@
+# COLLECT task
+collect:
+  store-path: E:\\programming\\QAS\\oceans-nadia-com\\collect
+  number-of-crawlers: 20
+  seed-urls: https://oceans-nadia.com/
+  filter-urls: /recipe/,
+               /user/
+  not-filter-urls: blogparts
+  not-available-extensions: .*(\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$
+
+
+# FORMAT task
+format:
+  store-path: E:\\programming\\QAS\\oceans-nadia-com\\collect
+  analyze-path: E:\\programming\\QAS\\oceans-nadia-com\\collect
+  format-template-path: E:\\programming\\QAS\\oceans-nadia-com\\config\\config.json
+
+# GENERATE task
+generate:
+  store-path: E:\\programming\\QAS\\greatbritishchefs-com\\generate
+  format-store-path: E:\\programming\\QAS\\greatbritishchefs-com\\translate
+  image-path: E:\\programming\\QAS\\greatbritishchefs-com\\format
+  config-template-path: E:\\programming\\QAS\\greatbritishchefs-com\\config\\template
+
+
+# TRANSLATE task greatbritishchefs-com
+# yandex
+translate:
+  yandex:
+    api-key: AQVNwPL6Y2uMBQtpAaFictpAYuSnqGfy3u9O5QLW
+    api-url: https://translate.api.cloud.yandex.net/translate/v2/translate
+    folder-id: b1g5kr1tgorndmmj0v23
+  store-path: E:\\programming\\QAS\\greatbritishchefs-com\\translate
+  analyze-path: E:\\programming\\QAS\\greatbritishchefs-com\\format
+  config-path: E:\\programming\\QAS\\greatbritishchefs-com\\config\\config.json
+
+
