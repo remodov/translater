@@ -11,4 +11,5 @@ class TranslateProperties(
     val storePath: String,
     val analyzePath: String,
     val configPath: String,
+    val sourceLanguage: String
 )
