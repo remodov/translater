@@ -11,6 +11,7 @@ import com.translater.generate.model.CategoryInfo
 import com.translater.generate.model.CategoryModel
 import com.translater.generate.model.ShortPageInfo
 import com.translater.generate.properties.GenerateProperties
+import com.translater.translate.LanguageProperties
 import mu.KLogging
 import org.apache.commons.io.FileUtils
 import org.springframework.stereotype.Service
@@ -32,6 +33,7 @@ class GenerateTaskService(
     private val generateProperties: GenerateProperties,
     val templateEngine: TemplateEngine,
     val objectMapper: ObjectMapper,
+    val languageProperties: LanguageProperties
 ) : ExecutionTask {
     private lateinit var pathForStore: Path
     private lateinit var formatStorePath: Path
@@ -48,9 +50,15 @@ class GenerateTaskService(
     }
 
     override fun start() {
-        logger.info("Start generate task.")
+        languageProperties.languages.values
+            .forEach { generateLingualSitePart(it) }
+    }
 
-        val commonPageModels: List<Page> = loadPagesSnapshotForGenerate()
+
+    private fun generateLingualSitePart(language: String) {
+        logger.info("Start generate task for lingual: $language")
+
+        val commonPageModels: List<Page> = loadPagesSnapshotForGenerate(language)
 
         if (!Files.exists(pathForStore)) {
             Files.createDirectories(pathForStore)
@@ -59,6 +67,8 @@ class GenerateTaskService(
         if (!Files.exists(formatStorePath)) {
             Files.createDirectories(formatStorePath)
         }
+
+        checkLangDirectory(language)
 
         generateAutoCompleteXml(commonPageModels)
 
@@ -74,7 +84,15 @@ class GenerateTaskService(
 
         copyTemplateResources()
 
-        logger.info("End generate task.")
+        logger.info("End generate task for language: $language")
+    }
+
+    private fun checkLangDirectory(language: String) {
+        val tempDirectory = File("$formatStorePath${File.separator}$language")
+        if (tempDirectory.exists()) {
+            return
+        }
+        tempDirectory.mkdir()
     }
 
     private fun generateIndexPage(commonPageModels: List<Page>): Set<CategoryInfo> {
@@ -111,9 +129,9 @@ class GenerateTaskService(
         return Context(Locale.getDefault(), result)
     }
 
-    private fun loadPagesSnapshotForGenerate(): List<Page> {
+    private fun loadPagesSnapshotForGenerate(language: String): List<Page> {
         val commonPageModels: MutableList<Page> = ArrayList()
-        Files.list(File(generateProperties.formatStorePath).toPath())
+        Files.list(File("${generateProperties.formatStorePath}${File.separator}$language").toPath())
             .filter { path: Path -> path.toString().contains(".json") }
             .forEach { path ->
                 val fileBytes = Files.readAllBytes(path)
