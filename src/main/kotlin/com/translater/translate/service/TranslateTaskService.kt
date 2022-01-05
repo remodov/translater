@@ -51,9 +51,11 @@ class TranslateTaskService(
             .filter { it.contains(".json") }
             .toMutableSet()
 
-        val idLinksAlreadyAnalyzed = File(translateProperties.storePath).list()!!
+        val idLinksAlreadyAnalyzed = File("${translateProperties.storePath}${File.separator}$targetLanguage").list()!!
             .filter { it.contains(".json") }
             .toMutableSet()
+
+        logger.info { "idLinksAlreadyAnalyzed: ${idLinksAlreadyAnalyzed.size}" }
 
         idLinks.removeAll(idLinksAlreadyAnalyzed)
 
