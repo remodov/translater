@@ -58,7 +58,13 @@ class GenerateTaskService(
     private fun generateLingualSitePart(language: String) {
         logger.info("Start generate task for lingual: $language")
 
-        val commonPageModels: List<Page> = loadPagesSnapshotForGenerate(language)
+        val commonPageModels: List<Page> =
+            try {
+                loadPagesSnapshotForGenerate(language)
+            } catch (ex: Exception) {
+                logger.error { "Can't determine generation for presented language: $language" }
+                return
+            }
 
         if (!Files.exists(pathForStore)) {
             Files.createDirectories(pathForStore)
@@ -70,25 +76,25 @@ class GenerateTaskService(
 
         checkLangDirectory(language)
 
-        generateAutoCompleteXml(commonPageModels)
+        generateAutoCompleteXml(commonPageModels, language)
 
-        generateCategory(commonPageModels)
+        generateCategory(commonPageModels, language)
 
-        generatePages(commonPageModels)
+        generatePages(commonPageModels, language)
 
         val shortPageInfos: Set<CategoryInfo> = generateIndexPage(commonPageModels)
 
-        generateFile(createIndexPageContext(shortPageInfos, commonPageModels), "v2\\index.html")
+        generateFile(createIndexPageContext(shortPageInfos, commonPageModels), "v2\\index.html", language)
 
-        generateSitemapXml(commonPageModels)
+        generateSitemapXml(commonPageModels, language)
 
-        copyTemplateResources()
+        copyTemplateResources(language)
 
         logger.info("End generate task for language: $language")
     }
 
     private fun checkLangDirectory(language: String) {
-        val tempDirectory = File("$formatStorePath${File.separator}$language")
+        val tempDirectory = File("$pathForStore${File.separator}$language")
         if (tempDirectory.exists()) {
             return
         }
@@ -103,11 +109,12 @@ class GenerateTaskService(
             .toSet()
     }
 
-    private fun generatePages(commonPageModels: List<Page>) {
+    private fun generatePages(commonPageModels: List<Page>, language: String) {
         commonPageModels.forEach(Consumer { commonPageModel: Page ->
             generateFile(
                 createPageContext(commonPageModel),
-                "v2/page.html"
+                "v2/page.html",
+                language
             )
         })
     }
@@ -141,7 +148,7 @@ class GenerateTaskService(
         return commonPageModels
     }
 
-    private fun generateAutoCompleteXml(commonPageModels: List<Page>) {
+    private fun generateAutoCompleteXml(commonPageModels: List<Page>, language: String) {
         /*
         * <?xml version="1.0" encoding="UTF-8"?>
         <Autocompletions start="0" num="2" total="2">
@@ -175,13 +182,13 @@ class GenerateTaskService(
         }
         stringBuilder.append("</Autocompletions>")
         FileUtils.writeStringToFile(
-            File(pathForStore.toString() + File.separator + "googleAutoComplete.xml"),
+            File("$pathForStore${File.separator}$language${File.separator}googleAutoComplete.xml"),
             stringBuilder.toString()
         )
     }
 
-    fun generateSitemapXml(commonPageModels: List<Page>) {
-        WebSitemapGenerator.builder("https://www.qas.su", File(generateProperties.storePath))
+    fun generateSitemapXml(commonPageModels: List<Page>, language: String) {
+        WebSitemapGenerator.builder("https://www.qas.su", File("${generateProperties.storePath}${File.separator}$language"))
             .build().let { wsg ->
                 commonPageModels.forEach(Consumer { page: Page ->
                     wsg.addUrl("https://www.qas.su/${page.uniqueId}.html")
@@ -198,22 +205,22 @@ class GenerateTaskService(
             }
     }
 
-    fun copyTemplateResources() {
+    fun copyTemplateResources(language: String) {
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}css"),
-            File("$pathForStore${File.separator}css")
+            File("$pathForStore${File.separator}$language${File.separator}css")
         )
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}img"),
-            File("$pathForStore${File.separator}img")
+            File("$pathForStore${File.separator}$language${File.separator}img")
         )
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}js"),
-            File("$pathForStore${File.separator}js")
+            File("$pathForStore${File.separator}$language${File.separator}js")
         )
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}assets"),
-            File("$pathForStore${File.separator}assets")
+            File("$pathForStore${File.separator}$language${File.separator}assets")
         )
     }
 
@@ -252,7 +259,7 @@ class GenerateTaskService(
         return context
     }
 
-    fun generateCategory(commonPageModels: List<Page>) {
+    fun generateCategory(commonPageModels: List<Page>, language: String) {
         val categories: Set<String> = commonPageModels
             .map { getCategories(it) }
             .flatten()
@@ -275,17 +282,17 @@ class GenerateTaskService(
                             page.payload?.get("description")?.textValue()
                         )
                     }
-            generateFile(createCategoryPageContext(categoryModel, cats), "v2/category.html")
+            generateFile(createCategoryPageContext(categoryModel, cats), "v2/category.html", language)
         })
 
     }
 
-    private fun generateFile(context: Context, htmlTemplate: String) {
-        val filePath = Paths.get(pathForStore.toString(), context.getVariable("uniqueId").toString() + ".html")
+    private fun generateFile(context: Context, htmlTemplate: String, language: String) {
+        val filePath = Paths.get("$pathForStore${File.separator}$language", context.getVariable("uniqueId").toString() + ".html")
         if (Files.exists(Paths.get(imagePath.toString(), context.getVariable("uniqueId").toString() + ".jpg"))) {
             FileUtils.copyFile(
                 Paths.get(imagePath.toString(), context.getVariable("uniqueId").toString() + ".jpg").toFile(),
-                Paths.get(pathForStore.toString(), context.getVariable("uniqueId").toString() + ".jpg").toFile()
+                Paths.get("$pathForStore${File.separator}$language", context.getVariable("uniqueId").toString() + ".jpg").toFile()
             )
         }
         Files.deleteIfExists(filePath)
