@@ -1,0 +1,38 @@
+{
+  "rules": [
+    {
+      "fieldName": "description",
+      "type": "element",
+      "isTranslated" : "false",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "balloonComment-right"
+        },
+		{
+          "order": 2,
+          "searchType" : "class",
+          "searchValue": "commentTxt"
+        }
+      ]
+    },
+    {
+      "fieldName": "cookSteps",
+      "type": "list",
+      "isTranslated" : "false",
+      "steps": [
+        {
+          "order": 1,
+          "searchType" : "class",
+          "searchValue": "stepBlock"
+        },
+        {
+          "order": 1,
+          "searchType" : "element",
+          "searchValue": "tr"
+        }
+      ]
+    }
+  ]
+}

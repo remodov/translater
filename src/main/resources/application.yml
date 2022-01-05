@@ -23,7 +23,7 @@ generate:
   config-template-path: E:\\programming\\QAS\\greatbritishchefs-com\\config\\template
 
 
-# TRANSLATE task greatbritishchefs-com
+# TRANSLATE task
 # yandex
 translate:
   yandex:
