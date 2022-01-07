@@ -3,7 +3,6 @@ package com.translater.generate.service
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.redfin.sitemapgenerator.WebSitemapGenerator
 import com.translater.common.model.ExecutionTask
 import com.translater.format.model.Page
 import com.translater.generate.model.Block
@@ -17,6 +16,8 @@ import org.apache.commons.io.FileUtils
 import org.springframework.stereotype.Service
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -27,6 +28,12 @@ import java.util.*
 import java.util.function.Consumer
 import java.util.stream.Collectors
 import javax.annotation.PostConstruct
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 
 @Service
 class GenerateTaskService(
@@ -78,6 +85,8 @@ class GenerateTaskService(
 
         generateAutoCompleteXml(commonPageModels, language)
 
+        generateSitemapXml(commonPageModels, language, languageProperties)
+
         generateCategory(commonPageModels, language)
 
         generatePages(commonPageModels, language)
@@ -85,8 +94,6 @@ class GenerateTaskService(
         val shortPageInfos: Set<CategoryInfo> = generateIndexPage(commonPageModels)
 
         generateFile(createIndexPageContext(shortPageInfos, commonPageModels), "v2\\index.html", language)
-
-        generateSitemapXml(commonPageModels, language)
 
         copyTemplateResources(language)
 
@@ -187,22 +194,63 @@ class GenerateTaskService(
         )
     }
 
-    fun generateSitemapXml(commonPageModels: List<Page>, language: String) {
-        WebSitemapGenerator.builder("https://www.qas.su", File("${generateProperties.storePath}${File.separator}$language"))
-            .build().let { wsg ->
-                commonPageModels.forEach(Consumer { page: Page ->
-                    wsg.addUrl("https://www.qas.su/${page.uniqueId}.html")
-                })
+    fun generateSitemapXml(commonPageModels: List<Page>, language: String, languageProperties: LanguageProperties) {
+        val docFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+        val docBuilder: DocumentBuilder = docFactory.newDocumentBuilder()
 
-                commonPageModels
-                    .map { page -> getCategories(page) }
-                    .flatten()
-                    .map { message -> transliterate(message) }.let { categories ->
-                        categories.forEach(Consumer { page: String? -> wsg.addUrl("https://www.qas.su/$page.html") })
-                    }
+        val doc: Document = docBuilder.newDocument()
+        val rootElement: Element = doc.createElement("urlset")
+        rootElement.setAttribute("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+        rootElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+        rootElement.setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml")
+        rootElement.setAttribute(
+            "xsi:schemaLocation", "http://www.sitemaps.org/schemas/sitemap/0.9 " +
+                    "http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd " +
+                    "http://www.w3.org/1999/xhtml " +
+                    "http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"
+        )
 
-                wsg.write()
+        doc.appendChild(rootElement)
+
+
+        val transformerFactory = TransformerFactory.newInstance()
+        val transformer = transformerFactory.newTransformer()
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        val source = DOMSource(doc)
+
+        commonPageModels.forEach(Consumer { page: Page ->
+            generateUrlStructure(language, page, doc, rootElement, languageProperties)
+        })
+
+        val result =
+            StreamResult(File("${generateProperties.storePath}${File.separator}$language${File.separator}sitemap.xml"))
+        transformer.transform(source, result);
+    }
+
+    fun generateUrlStructure(
+        language: String,
+        page: Page,
+        document: Document,
+        rootElement: Element,
+        languageProperties: LanguageProperties
+    ) {
+        val urlElement = document.createElement("url")
+        val locElement = document.createElement("loc")
+
+        locElement.textContent = "${generateProperties.siteName}/${page.uniqueId}.html"
+        urlElement.appendChild(locElement)
+
+        languageProperties.languages.values
+            .forEach {
+                val element = document.createElement("xhtml:link")
+                element.setAttribute("rel", "alternate")
+                element.setAttribute("hreflang", it)
+                element.setAttribute("href", "https://www.qas.su/$it/${page.uniqueId}.html")
+                urlElement.appendChild(element)
             }
+
+        rootElement.appendChild(urlElement)
     }
 
     fun copyTemplateResources(language: String) {
@@ -288,11 +336,15 @@ class GenerateTaskService(
     }
 
     private fun generateFile(context: Context, htmlTemplate: String, language: String) {
-        val filePath = Paths.get("$pathForStore${File.separator}$language", context.getVariable("uniqueId").toString() + ".html")
+        val filePath =
+            Paths.get("$pathForStore${File.separator}$language", context.getVariable("uniqueId").toString() + ".html")
         if (Files.exists(Paths.get(imagePath.toString(), context.getVariable("uniqueId").toString() + ".jpg"))) {
             FileUtils.copyFile(
                 Paths.get(imagePath.toString(), context.getVariable("uniqueId").toString() + ".jpg").toFile(),
-                Paths.get("$pathForStore${File.separator}$language", context.getVariable("uniqueId").toString() + ".jpg").toFile()
+                Paths.get(
+                    "$pathForStore${File.separator}$language",
+                    context.getVariable("uniqueId").toString() + ".jpg"
+                ).toFile()
             )
         }
         Files.deleteIfExists(filePath)

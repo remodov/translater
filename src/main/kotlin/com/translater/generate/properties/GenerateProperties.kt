@@ -10,5 +10,6 @@ data class GenerateProperties(
     override val storePath: String,
     val formatStorePath: String,
     val imagePath: String,
-    val configTemplatePath: String
+    val configTemplatePath: String,
+    val siteName: String
 ) : CommonProperties(storePath)

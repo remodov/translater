@@ -21,15 +21,17 @@ generate:
   format-store-path: E:\\programming\\QAS\\greatbritishchefs-com\\translate
   image-path: E:\\programming\\QAS\\greatbritishchefs-com\\format
   config-template-path: E:\\programming\\QAS\\greatbritishchefs-com\\config\\template
+  site-name: https://www.qas.su
+
 
 
 # TRANSLATE task
 # yandex
 translate:
   yandex:
-    api-key: AQVNwPL6Y2uMBQtpAaFictpAYuSnqGfy3u9O5QLW
+    api-key: AQVNzcEY6GwSLsctmuh2-OioW3e2urF3kjxzg2Ij
     api-url: https://translate.api.cloud.yandex.net/translate/v2/translate
-    folder-id: b1g5kr1tgorndmmj0v23
+    folder-id: b1gqmuhekf1kesel5rl3
   store-path: E:\\programming\\QAS\\greatbritishchefs-com\\translate
   analyze-path: E:\\programming\\QAS\\greatbritishchefs-com\\format
   config-path: E:\\programming\\QAS\\greatbritishchefs-com\\config\\config.json
@@ -39,7 +41,9 @@ translate:
 # SUPPORT LANGUAGES
 language:
   options:
-    de
+    de,
+    en,
+    ja
 
 
 
