@@ -8,17 +8,21 @@ import com.translater.common.model.ExecutionTask
 import com.translater.common.model.Task
 import com.translater.format.properties.FormatProperties
 import com.translater.generate.properties.GenerateProperties
+import com.translater.translate.LanguageProperties
 import com.translater.translate.TranslateProperties
 import com.translater.translate.yandex.properties.YandexPartConnectionProperties
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
+import org.springframework.context.MessageSource
+import org.springframework.context.support.ReloadableResourceBundleMessageSource
+
 
 @SpringBootApplication
 @EnableConfigurationProperties(
 	value = [CollectProperties::class, FormatProperties::class, GenerateProperties::class,
-		TranslateProperties::class, YandexPartConnectionProperties::class])
+		TranslateProperties::class, YandexPartConnectionProperties::class, LanguageProperties::class])
 class Application(
 	val taskFactory: TaskFactory
 ) : CommandLineRunner {
@@ -30,6 +34,8 @@ class Application(
 		taskRunner.start()
 	}
 }
+
+
 
 fun main(args: Array<String>) {
 	runApplication<Application>(*args)

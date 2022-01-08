@@ -10,5 +10,8 @@ data class GenerateProperties(
     override val storePath: String,
     val formatStorePath: String,
     val imagePath: String,
-    val configTemplatePath: String
+    val configTemplatePath: String,
+    val siteName: String,
+    val languageSearchGoogle: Map<String, String>,
+    val messages: Map<String, String>
 ) : CommonProperties(storePath)

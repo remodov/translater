@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html th:lang="${currentLanguage}">
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEHRKR8Z9W"></script>
@@ -19,6 +19,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Сайт рецептов от иностранных поваров">
   <title>Контакты</title>
+  <link rel="alternate" hreflang="x-default" th:href="@{'https://www.qas.su/contact.html'}" />
+
+  <th:block th:each="language : ${languages}">
+    <link rel="alternate" th:hreflang="${language}" th:href="@{'https://www.qas.su/' + ${language} + '/contact.html'}" />
+  </th:block>
   <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon-57x57.png"/>
   <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72x72.png"/>
@@ -47,6 +52,8 @@
   <link rel="stylesheet" type="text/css" href="assets/fonts/line-icons.css">
   <!-- Slicknav -->
   <link rel="stylesheet" type="text/css" href="assets/css/slicknav.css">
+
+  <link rel="stylesheet" type="text/css" href="assets/css/flags.css">
 
   <!-- Nivo Lightbox -->
   <link rel="stylesheet" type="text/css" href="assets/css/nivo-lightbox.css">
@@ -96,6 +103,16 @@
               На главную
             </a>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
+              <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdown09">
+              <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+              <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
+            </div>
+          </li>
         </ul>
       </div>
     </div>
@@ -116,6 +133,16 @@
         <a class="nav-link" href="index.html">
           На главную
         </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
+          <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdown09">
+          <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+          <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
+        </div>
       </li>
     </ul>
     <!-- Mobile Menu End -->

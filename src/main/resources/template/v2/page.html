@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${currentLanguage}" xmlns:th="http://www.thymeleaf.org">
   <head>
     <!-- Required meta tags -->
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -27,6 +28,12 @@
     <meta name="twitter:description" th:content="${description}">
     <meta name="twitter:image" th:content="'https://www.qas.su/' + ${pictureUrl}">
     <meta name="twitter:url" content="https://www.qas.su/">
+
+    <link rel="alternate" hreflang="x-default" th:href="@{'https://www.qas.su/' + ${uniqueId} + '.html'}" />
+
+    <th:block th:each="language : ${languages}">
+      <link rel="alternate" th:hreflang="${language}" th:href="@{'https://www.qas.su/' + ${language} + '/' + ${uniqueId} + '.html'}" />
+    </th:block>
 
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon-57x57.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114.png"/>
@@ -65,6 +72,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/owl.carousel.css">
     <!-- Main Style -->
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/flags.css">
     <!-- Responsive Style -->
     <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
     <script data-ad-client="ca-pub-6822823724045312" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -89,19 +97,29 @@
           <div class="collapse navbar-collapse" id="main-navbar">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="about.html">
+                <a class="nav-link" href="about.html" th:text="${menuAboutUsName}">
                   О нас
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">
+                <a class="nav-link" href="contact.html" th:text="${menuContactName}">
                   Контакты
                 </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">
+              <li class="nav-item" >
+                <a class="nav-link" href="index.html" th:text="${menuOnMainName}">
                   На главную
                 </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown08" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
+                  <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdown09">
+                  <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+                  <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
+                </div>
               </li>
             </ul>
           </div>
@@ -110,19 +128,25 @@
         <!-- Mobile Menu Start -->
         <ul class="mobile-menu">
           <li class="nav-item">
-            <a class="nav-link" href="about.html">
+            <a class="nav-link" href="about.html" th:text="${menuAboutUsName}">
               О нас
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="contact.html">
+            <a class="nav-link" href="contact.html" th:text="${menuContactName}">
               Контакты
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="index.html" th:text="${menuOnMainName}">
               На главную
             </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
           </li>
         </ul>
         <!-- Mobile Menu End -->
@@ -166,20 +190,20 @@
               <div class="post-content">                   
                 <div class="meta">
                   <ul>
-                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b>Дата публикации:</b> <span
+                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b th:text="${pageDatePublicationLabel}">Дата публикации:</b> <span
                             property="datePublished" th:text="${generatedDate}"></span></span>
                     </li>
-                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b>Время приготовления:</b> <span
+                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b th:text="${pageTotalTimeLabel}">Время приготовления:</b> <span
                             property="totalTime" th:text="${cookedTime}"></span></span>
                     </li>
-                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b>Сложность:</b>  <span
+                    <li><span class="meta-part"><i class="lni-alarm-clock"></i><b th:text="${pageDifficultLabel}">Сложность:</b>  <span
                             th:text="${difficult}"></span></span>
                     </li>
                   </ul>
                 </div>
                 <p property="description" th:text="${description}">Описание</p>
 
-                <h2>Ингредиенты</h2>
+                <h2 th:text="${pageIngredientTitle}">Ингредиенты</h2>
                 <ul class="list-specification">
                   <li property="recipeIngredient" th:each="ingredient : ${ingredients}" >
                     <i class="lni-check-mark-circle"></i>
@@ -187,7 +211,7 @@
                   </li>
                 </ul>
                 <span property="recipeInstructions">
-                    <h2>Рецепт</h2>
+                    <h2 th:text="${pageReceiptTitle}">Рецепт</h2>
                     <ul class="list-specification">
                          <li th:each="cookStep : ${cookSteps}">
                             <i class="lni-check-mark-circle"></i>
@@ -234,14 +258,14 @@
           <aside id="sidebar" class="col-lg-4 col-md-12 col-xs-12 right-sidebar">
             <!-- Searcg Widget -->
             <div class="widget_search">
-              <h4 class="fst-italic">Поиск по сайту</h4>
+              <h4 class="fst-italic" th:text="${searchOnSiteTitle}">Поиск по сайту</h4>
               <form id="search-form">
                 <div class="gcse-search"></div>
               </form>
             </div>
             <!-- Categories Widget -->
             <div class="widget categories">
-              <h4 class="widget-title">Категории рецепта</h4>
+              <h4 class="widget-title" th:text="${categoryReceiptTitle}">Категории рецепта</h4>
               <ul class="categories-list">
                 <li th:each="category : ${categoriesWithUrls}" >
                   <a property="recipeCategory" th:href="${category.categoryUrl}"  th:text="${category.name}">Категория</a>
@@ -266,7 +290,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="site-info float-left">
-                <p>All copyrights reserved &copy; 2021</p>
+                <p>All copyrights reserved &copy; 2022</p>
               </div>
             </div>
           </div>
@@ -323,7 +347,7 @@
       <div><img src="https://mc.yandex.ru/watch/81826594" style="position:absolute; left:-9999px;" alt=""/></div>
     </noscript>
     <!-- /Yandex.Metrika counter -->
-    <script async src="https://cse.google.com/cse.js?cx=4c3720658b865ae2c"></script>
+    <script async th:src="${googleSearch}"></script>
 
     <!-- Rating Mail.ru counter -->
     <script type="text/javascript">

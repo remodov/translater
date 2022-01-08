@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${currentLanguage}" xmlns:th="http://www.thymeleaf.org">
   <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEHRKR8Z9W"></script>
+    <script async th:src="${googleSearch}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -13,8 +13,12 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Сайт рецептов от иностранных поваров">
-    <title>Сайт рецептов</title>
+    <meta name="description" th:content="${indexHeadMetaDescription}" content="Сайт рецептов от иностранных поваров">
+    <link rel="alternate" hreflang="x-default" th:href="@{'https://www.qas.su/index.html'}" />
+
+    <th:block th:each="language : ${languages}">
+      <link rel="alternate" th:hreflang="${language}" th:href="@{'https://www.qas.su/' + ${language} + '/index.html'}" />
+    </th:block>
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon-57x57.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72x72.png"/>
@@ -43,6 +47,8 @@
     <link rel="stylesheet" type="text/css" href="assets/fonts/line-icons.css">
     <!-- Slicknav -->
     <link rel="stylesheet" type="text/css" href="assets/css/slicknav.css">
+
+    <link rel="stylesheet" type="text/css" href="assets/css/flags.css">
 
     <!-- Nivo Lightbox -->
     <link rel="stylesheet" type="text/css" href="assets/css/nivo-lightbox.css" >
@@ -76,14 +82,24 @@
           <div class="collapse navbar-collapse" id="main-navbar">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="about.html">
+                <a class="nav-link" href="about.html" th:text="${menuAboutUsName}">
                   О нас
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">
+                <a class="nav-link" href="contact.html" th:text="${menuContactName}">
                   Контакты
                 </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
+                  <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdown09">
+                  <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+                  <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
+                </div>
               </li>
             </ul>
           </div>
@@ -92,14 +108,20 @@
         <!-- Mobile Menu Start -->
         <ul class="mobile-menu">
           <li class="nav-item">
-            <a class="nav-link" href="about.html">
+            <a class="nav-link" href="about.html" th:text="${menuAboutUsName}">
               О нас
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="contact.html">
+            <a class="nav-link" href="contact.html" th:text="${menuContactName}">
               Контакты
             </a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
           </li>
         </ul>
         <!-- Mobile Menu End -->
@@ -114,8 +136,8 @@
           <div class="row d-flex justify-content-center">
             <div class="col-md-9 col-lg-9 col-xs-12 text-center">
               <div class="contents">
-                <h1 class="head-title">Исследуйте зарубежные рецепты</h1>
-                <p>Мы пополняем для Вас базу данных рецептов от иностранных блогеров и знаменитых поваров</p>
+                <h1 class="head-title" th:text="${indexHeadTitle}">Исследуйте зарубежные рецепты</h1>
+                <p th:text="${indexHeadDescription}">Мы пополняем для Вас базу данных рецептов от иностранных блогеров и знаменитых поваров</p>
                 <div class="search-two-form">
                   <form class="search-two" action="">
                     <div class="search-inner">
@@ -174,7 +196,7 @@
             <div class="counter">
               <div class="icon"><i class="lni-layers"></i></div>
               <h2 class="counterUp"><span th:text="${countPages}">1200</span></h2>
-              <p>Рецептов</p>
+              <p th:text="${indexCountReceipt}">Рецептов</p>
             </div>
           </div>
           <!-- Counter Item -->
@@ -182,7 +204,7 @@
             <div class="counter">
               <div class="icon"><i class="lni-map"></i></div>
               <h2 class="counterUp"><span th:text="${countCategories}">1200</span></h2>
-              <p>Категорий</p>
+              <p th:text="${indexCountCategory}">Категорий</p>
             </div>
           </div>
           <!-- Counter Item -->
@@ -195,7 +217,7 @@
     <!-- Featured Section Start -->
     <section class="featured section-padding">
       <div class="container">
-        <h1 class="section-title">Новые рецепты</h1>
+        <h1 class="section-title" th:text="${indexNewReceipt}">Новые рецепты</h1>
         <div class="row">
           <div th:each="page : ${latPages}" class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
             <div class="featured-box">
@@ -223,7 +245,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="site-info float-left">
-                <p>All copyrights reserved &copy; 2021</p>
+                <p>All copyrights reserved &copy; 2022/p>
               </div>              
             </div>
           </div>

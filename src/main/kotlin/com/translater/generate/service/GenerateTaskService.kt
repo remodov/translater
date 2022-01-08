@@ -3,7 +3,6 @@ package com.translater.generate.service
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.redfin.sitemapgenerator.WebSitemapGenerator
 import com.translater.common.model.ExecutionTask
 import com.translater.format.model.Page
 import com.translater.generate.model.Block
@@ -11,12 +10,16 @@ import com.translater.generate.model.CategoryInfo
 import com.translater.generate.model.CategoryModel
 import com.translater.generate.model.ShortPageInfo
 import com.translater.generate.properties.GenerateProperties
+import com.translater.translate.LanguageProperties
 import mu.KLogging
 import org.apache.commons.io.FileUtils
 import org.springframework.stereotype.Service
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 import java.io.File
+import java.io.FileInputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -26,19 +29,25 @@ import java.util.*
 import java.util.function.Consumer
 import java.util.stream.Collectors
 import javax.annotation.PostConstruct
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 
 @Service
 class GenerateTaskService(
     private val generateProperties: GenerateProperties,
     val templateEngine: TemplateEngine,
     val objectMapper: ObjectMapper,
+    val languageProperties: LanguageProperties
 ) : ExecutionTask {
     private lateinit var pathForStore: Path
     private lateinit var formatStorePath: Path
     private lateinit var imagePath: Path
 
     companion object : KLogging()
-
 
     @PostConstruct
     fun init() {
@@ -48,9 +57,21 @@ class GenerateTaskService(
     }
 
     override fun start() {
-        logger.info("Start generate task.")
+        languageProperties.languages.values
+            .forEach { generateLingualSitePart(it) }
+    }
 
-        val commonPageModels: List<Page> = loadPagesSnapshotForGenerate()
+
+    private fun generateLingualSitePart(language: String) {
+        logger.info("Start generate task for lingual: $language")
+
+        val commonPageModels: List<Page> =
+            try {
+                loadPagesSnapshotForGenerate(language)
+            } catch (ex: Exception) {
+                logger.error { "Can't determine generation for presented language: $language" }
+                return
+            }
 
         if (!Files.exists(pathForStore)) {
             Files.createDirectories(pathForStore)
@@ -60,21 +81,31 @@ class GenerateTaskService(
             Files.createDirectories(formatStorePath)
         }
 
-        generateAutoCompleteXml(commonPageModels)
+        checkLangDirectory(language)
 
-        generateCategory(commonPageModels)
+        generateAutoCompleteXml(commonPageModels, language)
 
-        generatePages(commonPageModels)
+        generateSitemapXml(commonPageModels, language, languageProperties)
+
+        generateCategory(commonPageModels, language)
+
+        generatePages(commonPageModels, language)
 
         val shortPageInfos: Set<CategoryInfo> = generateIndexPage(commonPageModels)
 
-        generateFile(createIndexPageContext(shortPageInfos, commonPageModels), "v2\\index.html")
+        generateFile(createIndexPageContext(shortPageInfos, commonPageModels, language), "v2\\index.html", language)
 
-        generateSitemapXml(commonPageModels)
+        copyTemplateResources(language)
 
-        copyTemplateResources()
+        logger.info("End generate task for language: $language")
+    }
 
-        logger.info("End generate task.")
+    private fun checkLangDirectory(language: String) {
+        val tempDirectory = File("$pathForStore${File.separator}$language")
+        if (tempDirectory.exists()) {
+            return
+        }
+        tempDirectory.mkdir()
     }
 
     private fun generateIndexPage(commonPageModels: List<Page>): Set<CategoryInfo> {
@@ -85,16 +116,17 @@ class GenerateTaskService(
             .toSet()
     }
 
-    private fun generatePages(commonPageModels: List<Page>) {
+    private fun generatePages(commonPageModels: List<Page>, language: String) {
         commonPageModels.forEach(Consumer { commonPageModel: Page ->
             generateFile(
-                createPageContext(commonPageModel),
-                "v2/page.html"
+                createPageContext(commonPageModel, language, languageProperties.languages.values.toMutableList()),
+                "v2/page.html",
+                language
             )
         })
     }
 
-    private fun createPageContext(pageMetaData: Page): Context {
+    private fun createPageContext(pageMetaData: Page, currentLanguage: String, languages: List<String>): Context {
         val mapper = ObjectMapper()
         val result: MutableMap<String, Any> =
             mapper.convertValue(pageMetaData.payload, object : TypeReference<MutableMap<String, Any>>() {})
@@ -103,17 +135,19 @@ class GenerateTaskService(
         result["uniqueId"] = pageMetaData.uniqueId ?: ""
         result["pictureUrl"] = pageMetaData.pictureUrl ?: ""
         result["generatedDate"] = pageMetaData.generatedDate ?: ""
-
+        result["languages"] = languages
+        result["currentLanguage"] = currentLanguage
         val categories = getCategories(pageMetaData)
             .map { CategoryInfo("${transliterate(it)}.html", it) }
         result["categoriesWithUrls"] = categories
+        result["googleSearch"] = generateProperties.languageSearchGoogle[currentLanguage]!!
 
         return Context(Locale.getDefault(), result)
     }
 
-    private fun loadPagesSnapshotForGenerate(): List<Page> {
+    private fun loadPagesSnapshotForGenerate(language: String): List<Page> {
         val commonPageModels: MutableList<Page> = ArrayList()
-        Files.list(File(generateProperties.formatStorePath).toPath())
+        Files.list(File("${generateProperties.formatStorePath}${File.separator}$language").toPath())
             .filter { path: Path -> path.toString().contains(".json") }
             .forEach { path ->
                 val fileBytes = Files.readAllBytes(path)
@@ -123,7 +157,7 @@ class GenerateTaskService(
         return commonPageModels
     }
 
-    private fun generateAutoCompleteXml(commonPageModels: List<Page>) {
+    private fun generateAutoCompleteXml(commonPageModels: List<Page>, language: String) {
         /*
         * <?xml version="1.0" encoding="UTF-8"?>
         <Autocompletions start="0" num="2" total="2">
@@ -157,49 +191,89 @@ class GenerateTaskService(
         }
         stringBuilder.append("</Autocompletions>")
         FileUtils.writeStringToFile(
-            File(pathForStore.toString() + File.separator + "googleAutoComplete.xml"),
+            File("$pathForStore${File.separator}$language${File.separator}googleAutoComplete.xml"),
             stringBuilder.toString()
         )
     }
 
-    fun generateSitemapXml(commonPageModels: List<Page>) {
-        WebSitemapGenerator.builder("https://www.qas.su", File(generateProperties.storePath))
-            .build().let { wsg ->
-                commonPageModels.forEach(Consumer { page: Page ->
-                    wsg.addUrl("https://www.qas.su/${page.uniqueId}.html")
-                })
+    private fun generateSitemapXml(commonPageModels: List<Page>, language: String, languageProperties: LanguageProperties) {
+        val docFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+        val docBuilder: DocumentBuilder = docFactory.newDocumentBuilder()
 
-                commonPageModels
-                    .map { page -> getCategories(page) }
-                    .flatten()
-                    .map { message -> transliterate(message) }.let { categories ->
-                        categories.forEach(Consumer { page: String? -> wsg.addUrl("https://www.qas.su/$page.html") })
-                    }
+        val doc: Document = docBuilder.newDocument()
+        val rootElement: Element = doc.createElement("urlset")
+        rootElement.setAttribute("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+        rootElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+        rootElement.setAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml")
+        rootElement.setAttribute(
+            "xsi:schemaLocation", "http://www.sitemaps.org/schemas/sitemap/0.9 " +
+                    "http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd " +
+                    "http://www.w3.org/1999/xhtml " +
+                    "http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"
+        )
 
-                wsg.write()
-            }
+        doc.appendChild(rootElement)
+
+
+        val transformerFactory = TransformerFactory.newInstance()
+        val transformer = transformerFactory.newTransformer()
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        val source = DOMSource(doc)
+
+        commonPageModels.forEach(Consumer { page: Page ->
+            generateUrlStructure(page, doc, rootElement, languageProperties)
+        })
+
+        val result =
+            StreamResult(File("${generateProperties.storePath}${File.separator}$language${File.separator}sitemap.xml"))
+        transformer.transform(source, result);
     }
 
-    fun copyTemplateResources() {
+    private fun generateUrlStructure(
+        page: Page,
+        document: Document,
+        rootElement: Element,
+        languageProperties: LanguageProperties
+    ) {
+        val urlElement = document.createElement("url")
+        val locElement = document.createElement("loc")
+
+        locElement.textContent = "${generateProperties.siteName}/${page.uniqueId}.html"
+        urlElement.appendChild(locElement)
+
+        languageProperties.languages.values
+            .forEach {
+                val element = document.createElement("xhtml:link")
+                element.setAttribute("rel", "alternate")
+                element.setAttribute("hreflang", it)
+                element.setAttribute("href", "https://www.qas.su/$it/${page.uniqueId}.html")
+                urlElement.appendChild(element)
+            }
+
+        rootElement.appendChild(urlElement)
+    }
+
+    fun copyTemplateResources(language: String) {
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}css"),
-            File("$pathForStore${File.separator}css")
+            File("$pathForStore${File.separator}$language${File.separator}css")
         )
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}img"),
-            File("$pathForStore${File.separator}img")
+            File("$pathForStore${File.separator}$language${File.separator}img")
         )
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}js"),
-            File("$pathForStore${File.separator}js")
+            File("$pathForStore${File.separator}$language${File.separator}js")
         )
         FileUtils.copyDirectory(
             File("${generateProperties.configTemplatePath}${File.separator}assets"),
-            File("$pathForStore${File.separator}assets")
+            File("$pathForStore${File.separator}$language${File.separator}assets")
         )
     }
 
-    fun createIndexPageContext(pagesByCategory: Set<CategoryInfo>, pages: List<Page>): Context {
+    fun createIndexPageContext(pagesByCategory: Set<CategoryInfo>, pages: List<Page>, language: String): Context {
         //TODO: refactoring
         val context = Context()
         val blocks: MutableList<Block> = ArrayList()
@@ -231,10 +305,14 @@ class GenerateTaskService(
         context.setVariable("countPages", pages.size)
         context.setVariable("countCategories", pagesByCategory.size)
         context.setVariable("uniqueId", "index")
+        context.setVariable("languages", languageProperties.languages.values.toMutableList())
+        context.setVariable("currentLanguage", language)
+        context.setVariable("googleSearch", generateProperties.languageSearchGoogle[language])
+
         return context
     }
 
-    fun generateCategory(commonPageModels: List<Page>) {
+    fun generateCategory(commonPageModels: List<Page>, language: String) {
         val categories: Set<String> = commonPageModels
             .map { getCategories(it) }
             .flatten()
@@ -257,19 +335,32 @@ class GenerateTaskService(
                             page.payload?.get("description")?.textValue()
                         )
                     }
-            generateFile(createCategoryPageContext(categoryModel, cats), "v2/category.html")
+            generateFile(createCategoryPageContext(categoryModel, cats, language), "v2/category.html", language)
         })
 
     }
 
-    private fun generateFile(context: Context, htmlTemplate: String) {
-        val filePath = Paths.get(pathForStore.toString(), context.getVariable("uniqueId").toString() + ".html")
+    private fun generateFile(context: Context, htmlTemplate: String, language: String) {
+        val filePath =
+            Paths.get("$pathForStore${File.separator}$language", context.getVariable("uniqueId").toString() + ".html")
         if (Files.exists(Paths.get(imagePath.toString(), context.getVariable("uniqueId").toString() + ".jpg"))) {
             FileUtils.copyFile(
                 Paths.get(imagePath.toString(), context.getVariable("uniqueId").toString() + ".jpg").toFile(),
-                Paths.get(pathForStore.toString(), context.getVariable("uniqueId").toString() + ".jpg").toFile()
+                Paths.get(
+                    "$pathForStore${File.separator}$language",
+                    context.getVariable("uniqueId").toString() + ".jpg"
+                ).toFile()
             )
         }
+
+        val messagesPath = generateProperties.messages[language]
+        val messageProperties = Properties()
+        messageProperties.loadFromXML(FileInputStream(messagesPath))
+
+        messageProperties.entries.forEach {
+            context.setVariable(it.key as String, it.value as String)
+        }
+
         Files.deleteIfExists(filePath)
         Files.write(
             filePath,
@@ -278,11 +369,14 @@ class GenerateTaskService(
         )
     }
 
-    private fun createCategoryPageContext(model: CategoryModel, cats: List<CategoryInfo>): Context {
+    private fun createCategoryPageContext(model: CategoryModel, cats: List<CategoryInfo>, currentLanguage: String): Context {
         return Context().apply {
             this.setVariable("model", model)
             this.setVariable("categories", cats)
             this.setVariable("uniqueId", transliterate(model.name!!))
+            this.setVariable("languages", languageProperties.languages.values.toMutableList())
+            this.setVariable("currentLanguage", currentLanguage)
+            this.setVariable("googleSearch", generateProperties.languageSearchGoogle[currentLanguage])
         }
     }
 
