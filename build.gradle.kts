@@ -21,7 +21,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
+	implementation("org.springframework.boot:spring-boot-configuration-processor")
 	implementation("com.goikosoft.crawler4j:crawler4j:4.5.11")
 
 	implementation("com.github.rvesse:airline:2.8.1")

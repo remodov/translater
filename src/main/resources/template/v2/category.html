@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${currentLanguage}" xmlns:th="http://www.thymeleaf.org">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -17,6 +17,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title th:text="${model.name}"></title>
+
+    <link rel="alternate" hreflang="x-default" th:href="@{'https://www.qas.su/'s + ${uniqueId} + '.html'}" />
+
+    <th:block th:each="language : ${languages}">
+      <link rel="alternate" th:hreflang="${language}" th:href="@{'https://www.qas.su/' + ${language} + '/' + ${uniqueId} + '.html'}" />
+    </th:block>
+
     <meta name="description" th:content="${model.name}" content="Сайт об HTML и создании сайтов">
 
     <link rel="alternate" hreflang="x-default" href="https://www.qas.su/" />
@@ -47,6 +54,8 @@
     <link rel="stylesheet" type="text/css" href="assets/fonts/line-icons.css">
     <!-- Slicknav -->
     <link rel="stylesheet" type="text/css" href="assets/css/slicknav.css">
+
+    <link rel="stylesheet" type="text/css" href="assets/css/flags.css">
 
     <!-- Nivo Lightbox -->
     <link rel="stylesheet" type="text/css" href="assets/css/nivo-lightbox.css" >
@@ -96,6 +105,16 @@
                   На главную
                 </a>
               </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
+                  <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdown09">
+                  <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+                  <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -116,6 +135,16 @@
             <a class="nav-link" href="index.html">
               На главную
             </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
+              <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdown09">
+              <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+              <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
+            </div>
           </li>
         </ul>
         <!-- Mobile Menu End -->

@@ -93,7 +93,7 @@ class GenerateTaskService(
 
         val shortPageInfos: Set<CategoryInfo> = generateIndexPage(commonPageModels)
 
-        generateFile(createIndexPageContext(shortPageInfos, commonPageModels), "v2\\index.html", language)
+        generateFile(createIndexPageContext(shortPageInfos, commonPageModels, language), "v2\\index.html", language)
 
         copyTemplateResources(language)
 
@@ -272,7 +272,7 @@ class GenerateTaskService(
         )
     }
 
-    fun createIndexPageContext(pagesByCategory: Set<CategoryInfo>, pages: List<Page>): Context {
+    fun createIndexPageContext(pagesByCategory: Set<CategoryInfo>, pages: List<Page>, language: String): Context {
         //TODO: refactoring
         val context = Context()
         val blocks: MutableList<Block> = ArrayList()
@@ -304,6 +304,8 @@ class GenerateTaskService(
         context.setVariable("countPages", pages.size)
         context.setVariable("countCategories", pagesByCategory.size)
         context.setVariable("uniqueId", "index")
+        context.setVariable("languages", languageProperties.languages.values.toMutableList())
+        context.setVariable("currentLanguage", language)
         return context
     }
 
@@ -330,7 +332,7 @@ class GenerateTaskService(
                             page.payload?.get("description")?.textValue()
                         )
                     }
-            generateFile(createCategoryPageContext(categoryModel, cats), "v2/category.html", language)
+            generateFile(createCategoryPageContext(categoryModel, cats, language), "v2/category.html", language)
         })
 
     }
@@ -355,11 +357,13 @@ class GenerateTaskService(
         )
     }
 
-    private fun createCategoryPageContext(model: CategoryModel, cats: List<CategoryInfo>): Context {
+    private fun createCategoryPageContext(model: CategoryModel, cats: List<CategoryInfo>, currentLanguage: String): Context {
         return Context().apply {
             this.setVariable("model", model)
             this.setVariable("categories", cats)
             this.setVariable("uniqueId", transliterate(model.name!!))
+            this.setVariable("languages", languageProperties.languages.values.toMutableList())
+            this.setVariable("currentLanguage", currentLanguage)
         }
     }
 
