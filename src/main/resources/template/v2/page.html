@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${currentLanguage}" xmlns:th="http://www.thymeleaf.org">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -27,6 +27,12 @@
     <meta name="twitter:description" th:content="${description}">
     <meta name="twitter:image" th:content="'https://www.qas.su/' + ${pictureUrl}">
     <meta name="twitter:url" content="https://www.qas.su/">
+
+    <link rel="alternate" hreflang="x-default" href="https://www.qas.su/" />
+
+    <th:block th:each="language : ${languages}">
+    <link rel="alternate" th:hreflang="${language}" th:href="@{'https://www.qas.su/' + ${language} + '/' + ${uniqueId}}" />
+    </th:block>
 
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon-57x57.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114x114.png"/>

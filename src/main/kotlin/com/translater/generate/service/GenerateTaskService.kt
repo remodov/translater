@@ -119,14 +119,14 @@ class GenerateTaskService(
     private fun generatePages(commonPageModels: List<Page>, language: String) {
         commonPageModels.forEach(Consumer { commonPageModel: Page ->
             generateFile(
-                createPageContext(commonPageModel),
+                createPageContext(commonPageModel, language, languageProperties.languages.values.toMutableList()),
                 "v2/page.html",
                 language
             )
         })
     }
 
-    private fun createPageContext(pageMetaData: Page): Context {
+    private fun createPageContext(pageMetaData: Page, currentLanguage: String, languages: List<String>): Context {
         val mapper = ObjectMapper()
         val result: MutableMap<String, Any> =
             mapper.convertValue(pageMetaData.payload, object : TypeReference<MutableMap<String, Any>>() {})
@@ -135,7 +135,8 @@ class GenerateTaskService(
         result["uniqueId"] = pageMetaData.uniqueId ?: ""
         result["pictureUrl"] = pageMetaData.pictureUrl ?: ""
         result["generatedDate"] = pageMetaData.generatedDate ?: ""
-
+        result["languages"] = languages
+        result["currentLanguage"] = currentLanguage
         val categories = getCategories(pageMetaData)
             .map { CategoryInfo("${transliterate(it)}.html", it) }
         result["categoriesWithUrls"] = categories
@@ -194,7 +195,7 @@ class GenerateTaskService(
         )
     }
 
-    fun generateSitemapXml(commonPageModels: List<Page>, language: String, languageProperties: LanguageProperties) {
+    private fun generateSitemapXml(commonPageModels: List<Page>, language: String, languageProperties: LanguageProperties) {
         val docFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
         val docBuilder: DocumentBuilder = docFactory.newDocumentBuilder()
 
@@ -220,7 +221,7 @@ class GenerateTaskService(
         val source = DOMSource(doc)
 
         commonPageModels.forEach(Consumer { page: Page ->
-            generateUrlStructure(language, page, doc, rootElement, languageProperties)
+            generateUrlStructure(page, doc, rootElement, languageProperties)
         })
 
         val result =
@@ -228,8 +229,7 @@ class GenerateTaskService(
         transformer.transform(source, result);
     }
 
-    fun generateUrlStructure(
-        language: String,
+    private fun generateUrlStructure(
         page: Page,
         document: Document,
         rootElement: Element,
