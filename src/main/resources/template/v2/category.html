@@ -91,17 +91,17 @@
           <div class="collapse navbar-collapse" id="main-navbar">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="about.html">
+                <a class="nav-link" href="about.html" th:text="${menuAboutUsName}">
                   О нас
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">
+                <a class="nav-link" href="contact.html" th:text="${menuContactName}">
                   Контакты
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="index.html" th:text="${menuOnMainName}">
                   На главную
                 </a>
               </li>
@@ -122,29 +122,25 @@
         <!-- Mobile Menu Start -->
         <ul class="mobile-menu">
           <li class="nav-item">
-            <a class="nav-link" href="about.html">
+            <a class="nav-link" href="about.html" th:text="${menuAboutUsName}">
               О нас
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="contact.html">
+            <a class="nav-link" href="contact.html" th:text="${menuContactName}">
               Контакты
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="index.html" th:text="${menuOnMainName}">
               На главную
             </a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="https://flag-sprites.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <th:block  th:if="${currentLanguage == 'de'}"><span class="flag flag-de"> </span> Deutsche</th:block>
-              <th:block  th:if="${currentLanguage == 'ru'}"><span class="flag flag-ru"> </span> Russian</th:block>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdown09">
-              <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
-              <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
-            </div>
+          <li class="nav-item">
+            <a class="dropdown-item" th:href="@{'https://www.qas.su/de/' + ${uniqueId} + '.html'}"><span class="flag flag-de"> </span>  Deutsche</a>
+          </li>
+          <li class="nav-item">
+            <a class="dropdown-item" th:href="@{'https://www.qas.su/ru/' + ${uniqueId} + '.html'}"><span class="flag flag-ru"> </span>  Russian</a>
           </li>
         </ul>
         <!-- Mobile Menu End -->
@@ -176,14 +172,14 @@
             <aside>
               <!-- Searcg Widget -->
               <div class="widget_search">
-                <h4 class="fst-italic">Поиск по сайту</h4>
+                <h4 class="fst-italic" th:text="${searchOnSiteTitle}">Поиск по сайту</h4>
                 <form id="search-form">
                   <div class="gcse-search"></div>
                 </form>
               </div>
               <!-- Categories Widget -->
               <div class="widget categories">
-                <h4 class="widget-title">Категории рецептов</h4>
+                <h4 class="widget-title" th:text="${categoryReceiptTitle}">Категории рецептов</h4>
                 <div class="dashboard-wrapper">
                   <div class="form-group mb-3">
                     <select class="js-example-basic-single" name="state">
@@ -192,7 +188,7 @@
                   </div>
                 </div>
                 <div class="card card--padding fill-bg">
-                  <button id="search" class="btn btn-common btn-full" type="button">Найти</button>
+                  <button id="search" class="btn btn-common btn-full" type="button" th:text="${categoryFindButtonLabel}">Найти</button>
                 </div>
               </div>
             </aside>
@@ -248,7 +244,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="site-info float-left">
-                <p>All copyrights reserved &copy; 2021</p>
+                <p>All copyrights reserved &copy; 2022</p>
               </div>
             </div>
           </div>
@@ -300,7 +296,7 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/81826594" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
-    <script async src="https://cse.google.com/cse.js?cx=4c3720658b865ae2c"></script>
+    <script async th:src="${googleSearch}"></script>
 
     <script type="text/javascript">
       $(document).ready(function() {

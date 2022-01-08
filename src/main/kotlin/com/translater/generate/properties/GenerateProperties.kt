@@ -11,5 +11,7 @@ data class GenerateProperties(
     val formatStorePath: String,
     val imagePath: String,
     val configTemplatePath: String,
-    val siteName: String
+    val siteName: String,
+    val languageSearchGoogle: Map<String, String>,
+    val messages: Map<String, String>
 ) : CommonProperties(storePath)

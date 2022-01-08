@@ -22,8 +22,12 @@ generate:
   image-path: E:\\programming\\QAS\\greatbritishchefs-com\\format
   config-template-path: E:\\programming\\QAS\\greatbritishchefs-com\\config\\template
   site-name: https://www.qas.su
-
-
+  language-search-google:
+    de: https://cse.google.com/cse.js?cx=e75a36c1baf85486e
+    ru: https://cse.google.com/cse.js?cx=4c3720658b865ae2c
+  messages:
+    de: /Users/vadimvikulin/QAS/greatbritishchefs-com/config/messages/messages_de.properties
+    ru: /Users/vadimvikulin/QAS/greatbritishchefs-com/config/messages/messages_ru.properties
 
 # TRANSLATE task
 # yandex
@@ -44,8 +48,6 @@ language:
     de,
     en,
     ja
-
-
 
 
 

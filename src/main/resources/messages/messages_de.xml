@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key = "indexHeadMetaDescription"> Website for recipes from foreign chefs </entry>
+    <entry key = "indexHeadTitle"> Explore foreign recipes </entry>
+    <entry key = "indexHeadDescription"> We are expanding our database of recipes from foreign bloggers and famous chefs for you </entry>
+    <entry key = "indexCountReceipt"> Recipes </entry>
+    <entry key = "indexCountCategory"> Categories </entry>
+    <entry key = "indexNewReceipt"> New recipes </entry>
+
+    <entry key = "pageDatePublicationLabel"> Publication date: </entry>
+    <entry key = "pageTotalTimeLabel"> Cooking time: </entry>
+    <entry key = "pageDifficultLabel"> Difficulty: </entry>
+    <entry key = "pageIngredientTitle"> Ingredients </entry>
+    <entry key = "pageReceiptTitle"> Recipe </entry>
+
+    <entry key="categoryReceiptTitle">Recipe Categories </entry>
+    <entry key="categoryFindButtonLabel">Find</entry>
+
+    <entry key = "searchOnSiteTitle"> Site search </entry>
+
+    <entry key = "menuAboutUsName"> About Us </entry>
+    <entry key = "menuContactName"> Contacts </entry>
+    <entry key = "menuOnMainName"> Home </entry>
+</properties>

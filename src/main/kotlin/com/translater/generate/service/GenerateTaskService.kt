@@ -19,6 +19,7 @@ import org.thymeleaf.context.Context
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
+import java.io.FileInputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -47,7 +48,6 @@ class GenerateTaskService(
     private lateinit var imagePath: Path
 
     companion object : KLogging()
-
 
     @PostConstruct
     fun init() {
@@ -140,6 +140,7 @@ class GenerateTaskService(
         val categories = getCategories(pageMetaData)
             .map { CategoryInfo("${transliterate(it)}.html", it) }
         result["categoriesWithUrls"] = categories
+        result["googleSearch"] = generateProperties.languageSearchGoogle[currentLanguage]!!
 
         return Context(Locale.getDefault(), result)
     }
@@ -306,6 +307,8 @@ class GenerateTaskService(
         context.setVariable("uniqueId", "index")
         context.setVariable("languages", languageProperties.languages.values.toMutableList())
         context.setVariable("currentLanguage", language)
+        context.setVariable("googleSearch", generateProperties.languageSearchGoogle[language])
+
         return context
     }
 
@@ -349,6 +352,15 @@ class GenerateTaskService(
                 ).toFile()
             )
         }
+
+        val messagesPath = generateProperties.messages[language]
+        val messageProperties = Properties()
+        messageProperties.loadFromXML(FileInputStream(messagesPath))
+
+        messageProperties.entries.forEach {
+            context.setVariable(it.key as String, it.value as String)
+        }
+
         Files.deleteIfExists(filePath)
         Files.write(
             filePath,
@@ -364,6 +376,7 @@ class GenerateTaskService(
             this.setVariable("uniqueId", transliterate(model.name!!))
             this.setVariable("languages", languageProperties.languages.values.toMutableList())
             this.setVariable("currentLanguage", currentLanguage)
+            this.setVariable("googleSearch", generateProperties.languageSearchGoogle[currentLanguage])
         }
     }
 
